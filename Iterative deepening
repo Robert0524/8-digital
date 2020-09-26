@@ -1,0 +1,195 @@
+#include<bits/stdc++.h>
+ 
+#pragma G++ optimize(2)
+ 
+using namespace std;
+ 
+#define fz(i,j,k) b[i][j]=int(s[k]-'0')
+ 
+strings;
+ 
+int k,l,r;
+ 
+int a[4][4]={0,0,0,0,0,1,2,3,0,8,0,4,0,7,6,5}//目标状态,b[4][4]={};
+ 
+bool bd()//判断与目标状态是否相等
+ 
+{
+ 
+   for(int i=1;i<=3;i++)
+ 
+    for(int j=1;j<=3;j++)
+ 
+         {
+ 
+              if(a[i][j]!=b[i][j])
+ 
+               return0;
+ 
+         }
+ 
+   return1;
+ 
+}
+ 
+ 
+ 
+ 
+ 
+bool find(int x,int y,int s,int p)//x,y是0所在的坐标，s为移动步数，p是一个剪枝思想，用来记录上一层移动的方向，如果这一层往回走，显然不是最优的。
+ 
+{
+ 
+   if(bd())
+ 
+    {
+ 
+       printf("%d",s);
+ 
+       return1;
+ 
+    }
+ 
+   if(s==k)return0;
+ 
+   if(x>1&&p!=1)
+ 
+    {
+ 
+       b[x][y]=b[x-1][y];
+ 
+       b[x-1][y]=0;
+ 
+       if(find(x-1,y,s+1,2))
+ 
+               {
+ 
+               b[x-1][y]=b[x][y];
+ 
+         b[x][y]=0;
+ 
+                return1;
+ 
+         }
+ 
+        b[x-1][y]=b[x][y];
+ 
+       b[x][y]=0;
+ 
+    }
+ 
+   if(x<3&&p!=2)
+ 
+    {
+ 
+       b[x][y]=b[x+1][y];
+ 
+       b[x+1][y]=0;
+ 
+       if(find(x+1,y,s+1,1))
+ 
+              {
+ 
+               b[x+1][y]=b[x][y];
+ 
+        b[x][y]=0;
+ 
+               return1;
+ 
+        }
+ 
+              b[x+1][y]=b[x][y];
+ 
+       b[x][y]=0;
+ 
+    }
+ 
+   if(y>1&&p!=3)
+ 
+    {
+ 
+       b[x][y]=b[x][y-1];
+ 
+       b[x][y-1]=0;
+ 
+       if(find(x,y-1,s+1,4))
+ 
+              {
+ 
+               b[x][y-1]=b[x][y];
+ 
+        b[x][y]=0;
+ 
+               return1;
+ 
+        }
+ 
+              b[x][y-1]=b[x][y];
+ 
+       b[x][y]=0;
+ 
+    }
+ 
+   if(y<3&&p!=4)
+ 
+    {
+ 
+       b[x][y]=b[x][y+1];
+ 
+       b[x][y+1]=0;
+ 
+       if(find(x,y+1,s+1,3))
+ 
+              {
+ 
+               b[x][y+1]=b[x][y];
+ 
+        b[x][y]=0;
+ 
+               return1;
+ 
+        }
+ 
+              b[x][y+1]=b[x][y];
+ 
+       b[x][y]=0;
+ 
+    }
+ 
+   return0;
+ 
+}
+ 
+ 
+ 
+int main()
+ 
+{
+ 
+       cin>>s;
+ 
+       int p=0;
+ 
+       for(int i=0;i<s.size();i++)
+ 
+        {
+ 
+              k=i+1;int t;
+ 
+              if(k%3==0)t=3,k--;
+ 
+               else t=k%3;
+ 
+               fz(k/3+1,t,i);
+ 
+               if(b[k/3+1][t]!=a[k/3+1][t]) p++;//
+ 
+              if(b[k/3+1][t]==0) l=k/3+1,r=t;
+ 
+        }
+ 
+       for(k=p/2;!find(l,r,0,0);k++);//与DFS有区别的地方，k即为假定的边界，p/2是一个略微的估价，因为一次交换最多修改两个不等的方块，p为统计出来与目标不等的方块数，那么至少p/2次到达目标。
+ 
+       return0;
+ 
+}
